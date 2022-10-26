@@ -1,0 +1,21 @@
+@types
+app
+  - http
+    - middleware
+    - interceptors
+    - validators
+  - modules
+    - [name]
+      - dtos
+      - services
+      - controllers
+  - exceptions
+  # - jobs
+  # - events
+  # - queues
+config
+bootstrap
+prisma
+logger
+# tests
+# resources
