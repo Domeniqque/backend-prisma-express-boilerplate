@@ -1,5 +1,5 @@
 {
-  "name": "backend-prisma-express-ts",
+  "name": "backend-prisma-express-template",
   "version": "1.0.0",
   "description": "The best backend boilerplate using Prisma, Express and Typescript",
   "scripts": {
