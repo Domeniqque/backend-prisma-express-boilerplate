@@ -7,6 +7,7 @@ export function globalErrorHandling(
   response: Response,
   next: NextFunction
 ) {
+  console.log("------>", err);
   if (err instanceof Error) {
     return response.status(400).json({
       message: err.message,

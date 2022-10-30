@@ -16,8 +16,8 @@ type LoginProps = {
   password: string;
 };
 
-@JsonController("/account/auth/")
 @Service()
+@JsonController("/account/auth/")
 export class AuthController {
   constructor(private authService: AuthService) {}
 
