@@ -4,7 +4,7 @@ import { CreateUserDto } from "../dtos/create-user.dto";
 import { UserService } from "../services/user.service";
 
 @Service()
-@JsonController("/account/")
+@JsonController("/account/users")
 export class UserController {
   constructor(private userService: UserService) {}
 
