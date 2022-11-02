@@ -23,6 +23,9 @@ export class UserService {
         email,
         deleted_at: null,
       },
+      include: {
+        refreshTokens: true,
+      },
     });
   }
 

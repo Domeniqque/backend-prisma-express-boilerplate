@@ -23,7 +23,10 @@ export class AuthenticateMiddleware implements ExpressMiddlewareInterface {
     const [, token] = authToken.split(" ");
 
     try {
-      const { userId } = verify(token, AppConfig.JWT_SECRET) as AuthPayload;
+      const { userId } = verify(
+        token,
+        AppConfig.JWT_ACCESS_SECRET
+      ) as AuthPayload;
 
       const userService = Container.get(UserService);
 

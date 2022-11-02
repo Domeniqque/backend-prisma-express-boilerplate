@@ -3,13 +3,18 @@ import {
   Body,
   Get,
   JsonController,
+  OnUndefined,
   Post,
   Req,
   UseBefore,
 } from "routing-controllers";
 import { Service } from "typedi";
 import { AuthenticateMiddleware } from "~/app/http/middleware/authenticate.middleware";
-import { LoginPropsDto } from "../dtos/auth-user.dto";
+import {
+  LoginPropsDto,
+  LogoutProps,
+  RefreshTokenPropsDto,
+} from "../dtos/auth-user.dto";
 import { AuthService } from "../services/auth.service";
 
 @Service()
@@ -19,9 +24,27 @@ export class AuthController {
 
   @Post("login")
   async login(@Body() { email, password }: LoginPropsDto) {
-    const tokens = await this.authService.getTokens({ email, password });
+    const tokens = await this.authService.login({ email, password });
 
     return tokens;
+  }
+
+  @Post("refresh-token")
+  @OnUndefined(401)
+  async refreshToken(
+    @Body() { accessToken, refreshToken }: RefreshTokenPropsDto
+  ) {
+    const tokens = await this.authService.refreshTokens({
+      accessToken,
+      refreshToken,
+    });
+
+    return tokens;
+  }
+
+  @Post("logout")
+  async logout(@Body() { refreshToken }: LogoutProps) {
+    await this.authService.logout(refreshToken);
   }
 
   @Get("profile")

@@ -8,6 +8,7 @@ async function main() {
   logger.info("Seeding started");
 
   await seedUsers(prisma);
+  logger.info("Seeding finished");
 }
 
 main()
