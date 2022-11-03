@@ -43,6 +43,8 @@ export class AuthController {
   }
 
   @Post("logout")
+  @UseBefore(AuthenticateMiddleware)
+  @OnUndefined(200)
   async logout(@Body() { refreshToken }: LogoutProps) {
     await this.authService.logout(refreshToken);
   }
