@@ -1,15 +1,14 @@
-import { NextFunction, Request, Response } from "express";
-import { logger } from "~/logger";
+import { NextFunction, Request, Response } from 'express';
+import { logger } from '~/logger';
 import {
   Middleware,
-  ExpressErrorMiddlewareInterface,
-  HttpError,
-} from "routing-controllers";
-import { Service } from "typedi";
-import { ValidationError } from "class-validator";
+  ExpressErrorMiddlewareInterface
+} from 'routing-controllers';
+import { Service } from 'typedi';
+import { ValidationError } from 'class-validator';
 
 @Service()
-@Middleware({ type: "after" })
+@Middleware({ type: 'after' })
 export class GlobalErrorHandler implements ExpressErrorMiddlewareInterface {
   error(
     error: unknown,
@@ -39,15 +38,15 @@ export class GlobalErrorHandler implements ExpressErrorMiddlewareInterface {
 
       return response.status(400).json({
         message: error.message,
-        errors,
+        errors
       });
     }
 
     logger.error(error, `[globalErrorHandling] Internal server error`);
 
     return response.status(500).json({
-      status: "error",
-      message: "Internal server error",
+      status: 'error',
+      message: 'Internal server error'
     });
   }
 }

@@ -1,8 +1,8 @@
-import { User } from "@prisma/client";
+import { User } from '@prisma/client';
 
-declare module "express-serve-static-core" {
+declare module 'express-serve-static-core' {
   interface Request {
-    user: Omit<User, "password">;
+    user: Omit<User, 'password'>;
   }
   interface Response {}
 }

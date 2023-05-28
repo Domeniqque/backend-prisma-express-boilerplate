@@ -1,15 +1,15 @@
-import { compare } from "bcrypt";
-import { sign, verify } from "jsonwebtoken";
-import { Service } from "typedi";
-import crypto from "crypto";
-import { addMilliseconds, isPast } from "date-fns";
-import ms from "ms";
-import { AuthPayload } from "~/@types/authentication";
-import { AppConfig } from "~/config";
-import { PrismaService } from "~/prisma/prisma.service";
-import { UserService } from "./user.service";
-import { User, UserTokens } from "@prisma/client";
-import { logger } from "~/logger";
+import { compare } from 'bcrypt';
+import { sign, verify } from 'jsonwebtoken';
+import { Service } from 'typedi';
+import crypto from 'crypto';
+import { addMilliseconds, isPast } from 'date-fns';
+import ms from 'ms';
+import { AuthPayload } from '~/@types/authentication';
+import { AppConfig } from '~/config';
+import { PrismaService } from '~/prisma/prisma.service';
+import { UserService } from './user.service';
+import { User } from '@prisma/client';
+import { logger } from '~/logger';
 
 export type LoginProps = {
   email: string;
@@ -32,13 +32,13 @@ export class AuthService {
     const user = await this.userService.findByEmail(email);
 
     if (!user) {
-      throw new Error("Invalid username or password");
+      throw new Error('Invalid username or password');
     }
 
     const passwordMatch = await compare(password, user.password);
 
     if (!passwordMatch) {
-      throw new Error("Invalid username or password");
+      throw new Error('Invalid username or password');
     }
 
     const tokens = await this._createTokens(user);
@@ -49,22 +49,22 @@ export class AuthService {
   async refreshTokens({ accessToken, refreshToken }: RefreshTokensProps) {
     try {
       const { userId } = verify(accessToken, AppConfig.JWT_ACCESS_SECRET, {
-        ignoreExpiration: true,
+        ignoreExpiration: true
       }) as AuthPayload;
 
       const storedRefreshToken = await this.prisma.userTokens.findFirst({
         where: {
           refresh_token: refreshToken,
-          user_id: userId,
+          user_id: userId
         },
         include: {
-          user: true,
-        },
+          user: true
+        }
       });
 
       const logObj = {
         userId,
-        refreshToken,
+        refreshToken
       };
 
       if (!storedRefreshToken) {
@@ -78,7 +78,7 @@ export class AuthService {
       }
 
       await this.prisma.userTokens.delete({
-        where: { id: storedRefreshToken.id },
+        where: { id: storedRefreshToken.id }
       });
 
       const tokens = await this._createTokens(storedRefreshToken.user);
@@ -92,8 +92,8 @@ export class AuthService {
   async logout(refreshToken: string) {
     await this.prisma.userTokens.deleteMany({
       where: {
-        refresh_token: refreshToken,
-      },
+        refresh_token: refreshToken
+      }
     });
   }
 
@@ -102,7 +102,7 @@ export class AuthService {
 
     const accessToken = sign(payload, AppConfig.JWT_ACCESS_SECRET, {
       subject: user.email,
-      expiresIn: AppConfig.JWT_ACCESS_EXPIRE_AT,
+      expiresIn: AppConfig.JWT_ACCESS_EXPIRE_AT
     });
 
     // Refresh token
@@ -112,11 +112,11 @@ export class AuthService {
   }
 
   async _createRefreshToken(userId: number) {
-    const randomString = crypto.randomBytes(10).toString("hex");
+    const randomString = crypto.randomBytes(10).toString('hex');
     const refreshToken = crypto
-      .createHash("sha256")
+      .createHash('sha256')
       .update(randomString)
-      .digest("hex");
+      .digest('hex');
 
     const expireAt = addMilliseconds(
       new Date(),
@@ -127,8 +127,8 @@ export class AuthService {
       data: {
         user_id: userId,
         expire_at: expireAt,
-        refresh_token: refreshToken,
-      },
+        refresh_token: refreshToken
+      }
     });
 
     return data;

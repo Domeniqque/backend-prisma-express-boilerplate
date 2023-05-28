@@ -1,14 +1,14 @@
-import { PrismaClient } from "@prisma/client";
-import { logger } from "~/logger";
-import { seedUsers } from "./users.seed";
+import { PrismaClient } from '@prisma/client';
+import { logger } from '~/logger';
+import { seedUsers } from './users.seed';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  logger.info("Seeding started");
+  logger.info('Seeding started');
 
   await seedUsers(prisma);
-  logger.info("Seeding finished");
+  logger.info('Seeding finished');
 }
 
 main()
@@ -18,5 +18,5 @@ main()
   })
   .finally(async () => {
     await prisma.$disconnect();
-    logger.info("Seed completed!");
+    logger.info('Seed completed!');
   });

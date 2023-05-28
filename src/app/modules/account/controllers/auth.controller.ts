@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { Request } from 'express';
 import {
   Body,
   Get,
@@ -6,50 +6,50 @@ import {
   OnUndefined,
   Post,
   Req,
-  UseBefore,
-} from "routing-controllers";
-import { Service } from "typedi";
-import { AuthenticateMiddleware } from "~/app/http/middleware/authenticate.middleware";
+  UseBefore
+} from 'routing-controllers';
+import { Service } from 'typedi';
+import { AuthenticateMiddleware } from '~/app/http/middleware/authenticate.middleware';
 import {
   LoginPropsDto,
   LogoutProps,
-  RefreshTokenPropsDto,
-} from "../dtos/auth-user.dto";
-import { AuthService } from "../services/auth.service";
+  RefreshTokenPropsDto
+} from '../dtos/auth-user.dto';
+import { AuthService } from '../services/auth.service';
 
 @Service()
-@JsonController("/account/auth/")
+@JsonController('/account/auth/')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post("login")
+  @Post('login')
   async login(@Body() { email, password }: LoginPropsDto) {
     const tokens = await this.authService.login({ email, password });
 
     return tokens;
   }
 
-  @Post("refresh-token")
+  @Post('refresh-token')
   @OnUndefined(401)
   async refreshToken(
     @Body() { accessToken, refreshToken }: RefreshTokenPropsDto
   ) {
     const tokens = await this.authService.refreshTokens({
       accessToken,
-      refreshToken,
+      refreshToken
     });
 
     return tokens;
   }
 
-  @Post("logout")
+  @Post('logout')
   @UseBefore(AuthenticateMiddleware)
   @OnUndefined(200)
   async logout(@Body() { refreshToken }: LogoutProps) {
     await this.authService.logout(refreshToken);
   }
 
-  @Get("profile")
+  @Get('profile')
   @UseBefore(AuthenticateMiddleware)
   async me(@Req() request: Request) {
     return request.user;
